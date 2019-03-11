@@ -9,6 +9,7 @@ namespace Bank
     class AccountsManager
     {
         private IList<Account> _accounts;
+
         public AccountsManager()
         {
             _accounts = new List<Account>();
@@ -52,5 +53,81 @@ namespace Bank
 
             return account;
         }
+
+        public IEnumerable<Account> GetAllAccountsFor(string firstName, string lastName, long pesel)
+        {
+
+
+            return _accounts.Where(x => x.FirstName == firstName && x.LastName == lastName && x.Pesel == pesel);
+
+
+            /* ------ TEN SAM KOD W INNEJ WERSJI DŁUZSZEJ ----------- */
+
+            //List<Account> customerAccounts = new List<Account>();
+
+            //foreach (Account account in _accounts)
+            //{
+            //    if (account.FirstName == firstName && account.LastName == lastName && account.Pesel == pesel)
+            //    {
+            //        customerAccounts.Add(account);
+            //    }
+            //}
+
+            //return customerAccounts;
+        }
+
+        public Account GetAccount(string accountNo)
+        {
+
+            return _accounts.Single(x => x.AccountNumber == accountNo); 
+
+            /* ------ TEN SAM KOD W INNEJ WERSJI DŁUZSZEJ ----------- */
+            //Account account = null;
+
+            //foreach (Account acc in _accounts)
+            //{
+            //    if (acc.AccountNumber == accountNo)
+            //    {
+            //        account = acc;
+            //        break;
+            //    }
+            //}
+
+            //return account;
+        }
+
+        public IEnumerable<string> ListOfCustomers()
+        {
+            return _accounts.Select(a => string.Format("Imię: {0} | Nazwisko: {1} | PESEL: {2}",
+                a.FirstName, a.LastName, a.Pesel)).Distinct();
+
+
+        }
+
+        public void CloseMonth()
+        {
+            foreach (SavingsAccount account in _accounts.Where(x => x is SavingsAccount))
+            {
+                account.AddInterest(0.04M);
+            }
+
+            foreach (BillingAccount account in _accounts.Where(x => x is BillingAccount))
+            {
+                account.TakeCharge(5.0M);
+            }
+        }
+
+        public void AddMoney(string accountNo, decimal value)
+        {
+            Account account = GetAccount(accountNo);
+            account.ChangeBalance(value);
+        }
+
+        public void TakeMoney(string accountNo, decimal value)
+        {
+            Account account = GetAccount(accountNo);
+            account.ChangeBalance(-value);
+        }
+
     }
 }

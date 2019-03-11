@@ -16,6 +16,10 @@ namespace Bank
             
         }
 
+        public void AddInterest(decimal interest)
+        {
+            Balance += Balance * interest;
+        }
 
         public override string TypeName()
         {
